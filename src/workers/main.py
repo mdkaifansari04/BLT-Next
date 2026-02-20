@@ -32,9 +32,10 @@ def get_cors_headers(origin):
 
 def create_response(data, status=200, origin=None):
     """Create a JSON response with CORS headers"""
+    cors_headers = get_cors_headers(origin) if origin else {}
     headers = {
         'Content-Type': 'application/json',
-        **get_cors_headers(origin) if origin else {},
+        **cors_headers,
     }
     
     return Response.new(
