@@ -509,6 +509,42 @@ function updateUIForAuth() {
 }
 
 // ===================================
+// Footer Last Updated
+// ===================================
+function updateFooterLastUpdated() {
+    const el = document.getElementById('footer-last-updated');
+    if (!el) return;
+
+    const lastModified = new Date(document.lastModified);
+    const now = new Date();
+    const diffMins = Math.max(0, Math.floor((now - lastModified) / 60000));
+    const hours = Math.floor(diffMins / 60);
+    const mins = diffMins % 60;
+
+    const dateStr = lastModified.toLocaleString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+    });
+
+    let agoStr;
+    if (hours > 0 && mins > 0) {
+        agoStr = `${hours} hour${hours !== 1 ? 's' : ''} and ${mins} minute${mins !== 1 ? 's' : ''} ago`;
+    } else if (hours > 0) {
+        agoStr = `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+    } else if (mins > 0) {
+        agoStr = `${mins} minute${mins !== 1 ? 's' : ''} ago`;
+    } else {
+        agoStr = 'just now';
+    }
+
+    el.textContent = `Last updated: ${dateStr} (${agoStr})`;
+}
+
+// ===================================
 // Initialization
 // ===================================
 async function init() {
@@ -526,6 +562,9 @@ async function init() {
     } catch (error) {
         // Auth check failure is handled by UI state
     }
+
+    // Update footer with last modified date
+    updateFooterLastUpdated();
 
     // Update state to ready
     state.emit('app:ready');
